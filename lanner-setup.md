@@ -45,8 +45,8 @@ Precondition: Ubuntu 20.04 is set up, network is attached, Docker is installed
 3. connected to the device via putty use `ip a` and then search for the ip address, generally something similar to 192.168.0.4
 4. open a Cmd prompt on your computer and use the following 2 commands to move the murakami.toml and the service account keyfile to the device
 ```
-pscp C:\pathToFile\service-account-keyfile.json DeviceName@deviceIp:service-account-keyfile.json
-pscp C:\pathToFile\murakami.toml DeviceName@deviceIp:murakami.toml
+pscp C:\pathToFile\service-account-keyfile.json UserName@deviceIp:service-account-keyfile.json
+pscp C:\pathToFile\murakami.toml UserName@deviceIp:murakami.toml
 ```
 5. Both files should now be on the device, return to using putty where you can confirm their presencewith the the `dir` command 
 6. Create a folder called config using the command `mkdir config"
