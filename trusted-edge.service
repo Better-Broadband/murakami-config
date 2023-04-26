@@ -1,0 +1,9 @@
+[Unit]
+Description = Watches a data directory under the user's home for new files and pushes them to the trusted-edge
+After = network.target
+
+[Server]
+ExecStart = /bin/bash -c /trusted-edge/trusted-edge.sh
+
+[Install]
+WantedBy = multi-user.target

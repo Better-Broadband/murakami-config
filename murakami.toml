@@ -31,8 +31,8 @@ immediate = 1
 # connected. These values are included in test results, and in result file 
 # names.
 #
-location = "Portland"
-network-type = "home"
+location = "Arkansas"
+network-type = "1"
 connection-type = "wired"
 
 # Exporters define where test data should be saved or exported. For each 
@@ -47,7 +47,7 @@ connection-type = "wired"
   #
   [exporters.local]
   type = "local"
-  enabled = false
+  enabled = true
   path = "/data/"
 
   # The 'scp' exporter defines a remote server where data should be copied.
@@ -69,10 +69,10 @@ connection-type = "wired"
   #
   [exporters.gcs]
   type = "gcs"
-  enabled = true
-  target = "gs://better-broadband-monitoring-logs/"
-  service_account = "monitors@better-broadband.iam.gserviceaccount.com"
-  key = "/murakami/configs/service-account-keyfile.json"
+  enabled = false
+  target = ""
+  service_account = ""
+  key = ""
 
   # Below is an example of exporting to a second GCS bucket.
   #[exporters.gcs2]
@@ -101,7 +101,7 @@ connection-type = "wired"
   enabled = true
 
   [tests.ndt5]
-  enabled = true
+  enabled = false
 
   [tests.speedtestsingle]
   enabled = false

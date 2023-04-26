@@ -40,26 +40,40 @@ curl -fsSL https://get.docker.com | sudo sh -
 
 Precondition: Ubuntu 20.04 is set up, network is attached, Docker is installed
 
-1. Download the murakami.toml from github.com/Better-Broadband/murakami-config.git. Name it `murakami.toml`.
-2. Get the service account keyfile from GCP for the `monitors` service account. Name it `service-account-keyfile.json`.
+1. From github.com/Better-Broadband/murakami-config.git, download the following files:
+   a. `murakami.toml`.
+   b. `trusted-edge.sh`
+   c. `trusted-edge.service`
+2. Get the TrustedEdge private key. Name it `precision-key.pem`
 3. connected to the device via putty use `ip a` and then search for the ip address, generally something similar to 192.168.0.4
-4. open a Cmd prompt on your computer and use the following 2 commands to move the murakami.toml and the service account keyfile to the device
+4. open a Cmd prompt on your computer and use the following commands to move the relevant files to the device
 ```
-pscp C:\pathToFile\service-account-keyfile.json UserName@deviceIp:service-account-keyfile.json
 pscp C:\pathToFile\murakami.toml UserName@deviceIp:murakami.toml
+pscp C:\pathToFile\trusted-edge.sh UserName@deviceIp:trusted-edge.sh
+pscp C:\pathToFile\trusted-edge.service UserName@deviceIp:trusted-edge.service
+pscp C:\pathToFile\precision-key.pem UserName@deviceIp:precision-key.pem
 ```
-5. Both files should now be on the device, return to using putty where you can confirm their presencewith the the `dir` command 
-6. Create a folder called config using the command `mkdir config"
-7. move the files into the folder using the commands `mv service-account-keyfile.json config` and ` mv murakami.toml config`
-8. Start the docker container using the following config:
+5. All files should now be on the device, return to using putty where you can confirm their presence with the `dir` command 
+6. Create a folder called `config` with the command `mkdir -p config`
+7. Create a folder called `data` with the command `mkdir -p data`
+8. Move the murakami.toml into the new config directory. `mv murakami.toml config`
+12. Start the docker container using the following config:
 ```
-sudo docker run -d --restart always --network host --volume /home/$username/config:/murakami/configs/ measurementlab/murakami:latest -c /murakami/configs/murakami.toml
+sudo docker run -d --restart always --network host --volume /home/$username/config:/murakami/configs/ --volume /home/$username/data:/data measurementlab/murakami:latest -c /murakami/configs/murakami.toml
 ```
-5. Check the docker logs to make sure authentication of the first test is successful
+13. Check the docker logs to make sure authentication of the first test is successful
 ```
 $ sudo docker ps  # to get the id of the container
 $ sudo docker logs -f $id  # using the id from above
 # ctrl+c to exit once you've observed the upload
+```
+8. Assume root with `sudo su`. Alternatively, prefix each of the following commands with `sudo`.
+9. Move the `trusted-edge.service` unit file to the `/etc/systemd/system` directory. `mv trusted-edge.server /etc/systemd/system`
+10. Move the `trusted-edge.sh` script to its own directory. `mkdir -p /trusted-edge; mv trusted-edge.sh /trusted-edge`
+11. Move the `precision-key.pem` private key to the root user's .ssh directory. Create it first, then make the move
+```
+mkdir -p /root/.ssh
+mv precision-key.pem /root/.ssh
 ```
 
 Note: files can be transferred using `scp` on Linux or `pscp` on Windows with a syntax like:
