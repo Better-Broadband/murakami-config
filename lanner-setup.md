@@ -56,25 +56,30 @@ pscp C:\pathToFile\precision-key.pem UserName@deviceIp:precision-key.pem
 5. All files should now be on the device, return to using putty where you can confirm their presence with the `dir` command 
 6. Create a folder called `config` with the command `mkdir -p config`
 7. Create a folder called `data` with the command `mkdir -p data`
-8. Move the murakami.toml into the new config directory. `mv murakami.toml config`
-12. Start the docker container using the following config:
+8. Create a folder called `.ssh` if it does not already exist with the command `mkdir -p .ssh`
+9. Move the murakami.toml into the new config directory. `mv murakami.toml config`
+10. Start the docker container using the following config:
 ```
 sudo docker run -d --restart always --network host --volume /home/$username/config:/murakami/configs/ --volume /home/$username/data:/data measurementlab/murakami:latest -c /murakami/configs/murakami.toml
 ```
-13. Check the docker logs to make sure authentication of the first test is successful
+11. Check the docker logs to make sure authentication of the first test is successful
 ```
 $ sudo docker ps  # to get the id of the container
 $ sudo docker logs -f $id  # using the id from above
 # ctrl+c to exit once you've observed the upload
 ```
-8. Assume root with `sudo su`. Alternatively, prefix each of the following commands with `sudo`.
-9. Move the `trusted-edge.service` unit file to the `/etc/systemd/system` directory. `mv trusted-edge.server /etc/systemd/system`
-10. Move the `trusted-edge.sh` script to its own directory. `mkdir -p /trusted-edge; mv trusted-edge.sh /trusted-edge`
-11. Move the `precision-key.pem` private key to the root user's .ssh directory. Create it first, then make the move
+12. Edit the `trusted-edge.service` unit file. Line 7 should read "User = USERNAME". Change that "USERNAME" to the Username on the Lanner system.
+13. Move the `trusted-edge.service` unit file to the `/etc/systemd/system` directory. You will need to assume root to do this `sudo mv trusted-edge.server /etc/systemd/system`
+14. Edit the `trusted-edge.sh` script. Line 4 should read "GS_BUCKETNAME=TODO". Change that "TODO" to the name of the bucket.
+15. Move the `trusted-edge.sh` script to its own directory. `mkdir -p /trusted-edge; mv trusted-edge.sh /trusted-edge`
+16. Move the `precision-key.pem` private key to the .ssh directory. `mv precision-key.pem .ssh`
+17. Reload the systemctl daemon to update it with the new unit file, then enable and start the service
 ```
-mkdir -p /root/.ssh
-mv precision-key.pem /root/.ssh
+sudo systemctl daemon-reload
+sudo systemctl enable trusted-edge.service
+sudo systemctl start trusted-edge.service
 ```
+18. Use systemctl one more time to verify the service is running. `sudo systemctl status trusted-edge.service`
 
 Note: files can be transferred using `scp` on Linux or `pscp` on Windows with a syntax like:
 
