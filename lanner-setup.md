@@ -70,9 +70,9 @@ $ sudo docker logs -f $id  # using the id from above
 ```
 12. Edit the `trusted-edge.service` unit file. Line 7 should read "User = USERNAME". Change that "USERNAME" to the Username on the Lanner system.
 13. Move the `trusted-edge.service` unit file to the `/etc/systemd/system` directory. You will need to assume root to do this `sudo mv trusted-edge.server /etc/systemd/system`
-14. Edit the `trusted-edge.sh` script. Line 4 should read "GS_BUCKETNAME=TODO". Change that "TODO" to the name of the bucket.
 15. Move the `trusted-edge.sh` script to its own directory. `mkdir -p /trusted-edge; mv trusted-edge.sh /trusted-edge`
 16. Move the `precision-key.pem` private key to the .ssh directory. `mv precision-key.pem .ssh`
+17. Install `inotify-tools` using apt. The shell script requires this package to watch for file system events. `sudo apt install inotify-tools`
 17. Reload the systemctl daemon to update it with the new unit file, then enable and start the service
 ```
 sudo systemctl daemon-reload
