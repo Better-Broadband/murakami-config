@@ -8,6 +8,6 @@ DST="${TRUSTED_EDGE_REMOTE}:/home/${TRUSTED_EDGE_USERNAME}/data"
 inotifywait -qm --event create --format "%f" $SRC | \
 	while read filename; do
 		scp -i "$HOME/.ssh/$TRUSTED_EDGE_SSH_KEY_FILENAME" "${SRC}/${filename}" "${TRUSTED_EDGE_USERNAME}@${DST}/${filename}"
-		ssh -i "$HOME/.ssh/$TRUSTED_EDGE_SSH_KEY_FILENAME" gsutil mv "${DST}/${filename}" "gs://${GS_BUCKETNAME}/${filename}"
+		ssh -i "$HOME/.ssh/$TRUSTED_EDGE_SSH_KEY_FILENAME" "${TRUSTED_EDGE_USERNAME}@${TRUSTED_EDGE_REMOTE}" 'gsutil mv "${DST}/${filename}" "gs://${GS_BUCKETNAME}/${filename}"'
 	done
 
