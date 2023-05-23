@@ -1,6 +1,6 @@
 # Lanner Setup
 
-Usefull links:
+Useful links:
 
 1. Rufus (to create ubuntu install media) `https://rufus.ie/en/`
 2. Ubuntu server (the OS we will be installing) `https://ubuntu.com/download/server`
