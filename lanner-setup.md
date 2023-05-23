@@ -44,34 +44,34 @@ Precondition: Ubuntu 20.04 is set up, network is attached, Docker is installed
    a. `murakami.toml`.
    b. `trusted-edge.sh`
    c. `trusted-edge.service`
-1.A.D.A.M. Edit the murakami.toml to include a unique id in the location field (line 34) e.g. location = "dell-jax-de4b"
-1.B Edit the `trusted-edge.service` unit file. Line 7 should read "User = USERNAME". Change that "USERNAME" to the Username on the Lanner system.
-2. Get the TrustedEdge private key. Name it `precision-key.pem`
-3. connected to the device via putty use `ip a` and then search for the ip address, generally something similar to 192.168.0.4
-4. open a Cmd prompt on your computer and use the following commands to move the relevant files to the device
+2. Edit the murakami.toml to include a unique id in the location field (line 34) e.g. location = "dell-jax-de4b"
+3. Edit the `trusted-edge.service` unit file. Line 7 should read "User = USERNAME". Change that "USERNAME" to the Username on the Lanner system.
+4. Get the TrustedEdge private key. Name it `precision-key.pem`
+5. connected to the device via putty use `ip a` and then search for the ip address, generally something similar to 192.168.0.4
+6. open a Cmd prompt on your computer and use the following commands to move the relevant files to the device
 ```
 pscp C:\pathToFile\murakami.toml UserName@deviceIp:murakami.toml
 pscp C:\pathToFile\trusted-edge.sh UserName@deviceIp:trusted-edge.sh
 pscp C:\pathToFile\trusted-edge.service UserName@deviceIp:trusted-edge.service
 pscp C:\pathToFile\precision-key.pem UserName@deviceIp:precision-key.pem
 ```
-5. All files should now be on the device, return to using putty where you can confirm their presence with the `dir` command 
-6. Create a folder called `config` with the command `mkdir -p config`
-7. Create a folder called `data` with the command `mkdir -p data`
-8. Create a folder called `.ssh` if it does not already exist with the command `mkdir -p .ssh`
-9. Move the murakami.toml into the new config directory. `mv murakami.toml config`
-10. Start the docker container using the following config:
+7. All files should now be on the device, return to using putty where you can confirm their presence with the `dir` command 
+8. Create a folder called `config` with the command `mkdir -p config`
+9. Create a folder called `data` with the command `mkdir -p data`
+10. Create a folder called `.ssh` if it does not already exist with the command `mkdir -p .ssh`
+11. Move the murakami.toml into the new config directory. `mv murakami.toml config`
+12. Start the docker container using the following config:
 ```
 sudo docker run -d --restart always --network host --volume /home/$username/config:/murakami/configs/ --volume /home/$username/data:/data measurementlab/murakami:latest -c /murakami/configs/murakami.toml
 ```
-11. Check the docker logs to make sure authentication of the first test is successful
+13. Check the docker logs to make sure authentication of the first test is successful
 ```
 $ sudo docker ps  # to get the id of the container
 $ sudo docker logs -f $id  # using the id from above
 # ctrl+c to exit once you've observed the upload
 ```
 
-13. Move the `trusted-edge.service` unit file to the `/etc/systemd/system` directory. You will need to assume root to do this `sudo mv trusted-edge.service /etc/systemd/system`
+14. Move the `trusted-edge.service` unit file to the `/etc/systemd/system` directory. You will need to assume root to do this `sudo mv trusted-edge.service /etc/systemd/system`
 15. Move the `trusted-edge.sh` script to its own directory. `sudo mkdir -p /trusted-edge; sudo mv trusted-edge.sh /trusted-edge`
 16. Change ownership of the new directory to the current user so the service can use it. `sudo chown -R $USER /trusted-edge`
 17. Move the `precision-key.pem` private key to the .ssh directory. `mv precision-key.pem .ssh`
